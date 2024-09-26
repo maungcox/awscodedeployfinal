@@ -1,0 +1,37 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /var/www/html
+    overwrite: yes
+
+hooks:
+  # ApplicationStop: Called before the new application revision is downloaded
+  ApplicationStop:
+    - location: scripts/application_stop.sh
+      timeout: 300
+      runas: root
+  
+  # BeforeInstall: Called before the new revision is installed (e.g., to clean up old files or back up)
+  BeforeInstall:
+    - location: scripts/before_install.sh
+      timeout: 300
+      runas: root
+  
+  # AfterInstall: Called after the application revision has been installed but before it's started
+  AfterInstall:
+    - location: scripts/after_install.sh
+      timeout: 300
+      runas: root
+
+  # ApplicationStart: Called after the AfterInstall hook to start/restart services (e.g., start Apache)
+  ApplicationStart:
+    - location: scripts/application_start.sh
+      timeout: 300
+      runas: root
+
+  # ValidateService: (Optional) Can be used to verify the application is running correctly after start
+  ValidateService:
+    - location: scripts/validate_service.sh
+      timeout: 300
+      runas: root
